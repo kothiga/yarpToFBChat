@@ -72,7 +72,7 @@ class Messenger(object):
         self.port_name  = args.name
 
         print("Initializing Yarp Ports . . .")
-        self.input_port = yarp.Port()
+        self.input_port = yarp.BufferedPortBottle()
         self.input_port.open(self.port_name + ":i")
 
         # Init complete. Send first messages.
@@ -90,15 +90,15 @@ class Messenger(object):
         # Loop until told to quit.
         while True:
 
-            self.input_port.read(command)
+            command = self.input_port.read()
             cmd = command.get(0).asString()
             len = command.size()
 
             # Kill this script.
             if cmd == "quit": 
-                print("\nClosing Process @ {}!!".format(self._getTimeStamp()))
-                self._sendMessage("Closing Forwarding Client @ {}.".format(self._getTimeStamp()))
+                print("\nClosing Process @ {}!!\n".format(self._getTimeStamp()))
                 self._sendMessage("Good Bye!!")
+                self._sendMessage("Closing Forwarding Client @ {}.".format(self._getTimeStamp()))
                 break
 
             # Forward messages.
